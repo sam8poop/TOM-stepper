@@ -1,13 +1,16 @@
+// includes
 #include <Arduino.h>
+
 // pins
+// out pins
 #define STEP_PIN 7
 #define DIR_PIN 8
 #define ENABLE_PIN 9
-
+// in dips
 #define DIR_DIP 4
 #define ENABLE_DIP 2
 #define ROT_MODE_DIP 5  
-
+// in pins
 #define BUTTON_PIN 3
 
 // config
@@ -34,7 +37,7 @@ void enable() {
 	digitalWrite(ENABLE_PIN, !digitalRead(ENABLE_DIP));
 }
 
-
+// builtin functions
 void setup() {
 	Serial.begin(115200);
 	pinMode(STEP_PIN, OUTPUT);
@@ -48,7 +51,6 @@ void setup() {
 	digitalWrite(ENABLE_PIN, false);
 	attachInterrupt(digitalPinToInterrupt(ENABLE_DIP), enable, CHANGE);
 }
-
 void loop() {
 	digitalWrite(DIR_PIN, !digitalRead(DIR_PIN));
 	Rotate();
@@ -56,6 +58,7 @@ void loop() {
 
 
 }
+
 // function def
 void Step() {
 	digitalWrite(STEP_PIN, HIGH);
