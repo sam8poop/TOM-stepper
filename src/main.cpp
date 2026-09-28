@@ -1,12 +1,18 @@
 #include <Arduino.h>
+// pins
 #define STEP_PIN 7
 #define DIR_PIN 8
 #define ENABLE_PIN 9
 #define DIR_DIP 3
 #define ENABLE_DIP 4
-// change to 200 for low steps per rev, 800 for normal steps per rev, 6400 for high steps per rev
-#define MICRO_STEP_MODE 6400
-int speed = 500;
+
+// config
+#define MICRO_STEP_MODE 6400 // change to 200 for low steps per rev, 800 for normal steps per rev, 6400 for high steps per rev
+const int deg = 180;
+const float rpm = 10;
+
+const int rot_delay = 30000000.0 / (rpm * MICRO_STEP_MODE);
+const int steps_in_deg_mode = MICRO_STEP_MODE * (deg / 360.0);
 void setup() {
   Serial.begin(115200);
   pinMode(STEP_PIN, OUTPUT);
@@ -21,17 +27,16 @@ void setup() {
 }
 
 void loop() {
-  
   digitalWrite(ENABLE_PIN, !digitalRead(ENABLE_DIP));
 
-  if (true) {
+  if (true) { // for testing porpises, true/if for button + changing dir, false/else for continus rot.
     if (!digitalRead(2)) {
-      for (int i = 0; i < MICRO_STEP_MODE; i++) {
+      for (int i = 0; i < steps_in_deg_mode; i++) {
         digitalWrite(STEP_PIN, HIGH);
-        delayMicroseconds(500);
+        delayMicroseconds(rot_delay);
 
         digitalWrite(STEP_PIN, LOW);
-        delayMicroseconds(500);
+        delayMicroseconds(rot_delay);
       }
       digitalWrite(DIR_PIN, !digitalRead(DIR_PIN));
       delay(100);
@@ -40,12 +45,9 @@ void loop() {
   else {
     digitalWrite(DIR_PIN, !digitalRead(DIR_DIP));
     digitalWrite(STEP_PIN, HIGH);
-    delayMicroseconds(speed);
+    delayMicroseconds(rot_delay);
 
     digitalWrite(STEP_PIN, LOW);
-    delayMicroseconds(speed);
-    
-
+    delayMicroseconds(rot_delay);
   }
-  
 }
