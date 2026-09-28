@@ -11,16 +11,31 @@
 #define BUTTON_PIN 3
 
 // config
-const int micro_step_mode = 6400; // change to 200 for low steps per rev, 800 for normal steps per rev, 6400 for high steps per rev
-const int deg = 180;
-const float rpm = 60;
+const int Micro_step_mode = 6400; // change to 200 for low steps per rev, 800 for normal steps per rev, 6400 for high steps per rev
+const int Deg = 180;
+const float Rpm = 60;
 
 // calc
-const int rot_delay = 30000000.0 / (rpm * micro_step_mode);
-const int steps_in_deg_mode = micro_step_mode * (deg / 360.0);
+const int Rot_delay = 30000000.0 / (Rpm * Micro_step_mode);
+const int Steps_in_deg_mode = Micro_step_mode * (Deg / 360.0);
+
+// enums
+enum class rot_mode_modes {
+	Continus,
+	Button
+};
+
+// functions
+void Rot_mode(rot_mode_modes Mode) {
+
+}
+
+// interrupt service routines
 void enable() {
 	digitalWrite(ENABLE_PIN, !digitalRead(ENABLE_DIP));
 }
+
+
 void setup() {
 	attachInterrupt(digitalPinToInterrupt(ENABLE_DIP), enable, CHANGE);
 	Serial.begin(115200);
@@ -40,9 +55,9 @@ void loop() {
 
 	if (true) { // for testing porpises, true/if for button + changing dir, false/else for continus rot.
 		if (!digitalRead(BUTTON_PIN)) {
-			for (int i = 0; i < steps_in_deg_mode; i++) {
+			for (int i = 0; i < Steps_in_deg_mode; i++) {
 				digitalWrite(STEP_PIN, HIGH);
-				delayMicroseconds(rot_delay);
+				delayMicroseconds(Rot_delay);
 
 				digitalWrite(STEP_PIN, LOW);
 				delayMicroseconds(rot_delay);
@@ -53,7 +68,7 @@ void loop() {
 	} else {
 		digitalWrite(DIR_PIN, !digitalRead(DIR_DIP));
 		digitalWrite(STEP_PIN, HIGH);
-		delayMicroseconds(rot_delay);
+		delayMicroseconds(Rot_delay);
 
 		digitalWrite(STEP_PIN, LOW);
 		delayMicroseconds(rot_delay);
