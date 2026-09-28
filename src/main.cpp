@@ -20,15 +20,14 @@ const int Rot_delay = 30000000.0 / (Rpm * Micro_step_mode);
 const int Steps_in_deg_mode = Micro_step_mode * (Deg / 360.0);
 
 // enums
-enum class rot_mode_modes {
-	Continus,
+enum Rot_modes {
+	Continuous,
 	Button
 };
 
-// functions
-void Rot_mode(rot_mode_modes Mode) {
-
-}
+// functions dec
+void Step();
+void Rotate(Rot_modes Mode = Continuous);
 
 // interrupt service routines
 void enable() {
@@ -37,7 +36,6 @@ void enable() {
 
 
 void setup() {
-	attachInterrupt(digitalPinToInterrupt(ENABLE_DIP), enable, CHANGE);
 	Serial.begin(115200);
 	pinMode(STEP_PIN, OUTPUT);
 	pinMode(DIR_PIN, OUTPUT);
@@ -48,29 +46,33 @@ void setup() {
 	pinMode(ENABLE_DIP, INPUT_PULLUP);
 	digitalWrite(DIR_PIN, false);
 	digitalWrite(ENABLE_PIN, false);
+	attachInterrupt(digitalPinToInterrupt(ENABLE_DIP), enable, CHANGE);
 }
 
 void loop() {
+	digitalWrite(DIR_PIN, !digitalRead(DIR_PIN));
+	Rotate();
+	Serial.println(digitalRead(ENABLE_PIN));
 
 
-	if (true) { // for testing porpises, true/if for button + changing dir, false/else for continus rot.
+}
+// function def
+void Step() {
+	digitalWrite(STEP_PIN, HIGH);
+	delayMicroseconds(Rot_delay);
+
+	digitalWrite(STEP_PIN, LOW);
+	delayMicroseconds(Rot_delay);
+}
+void Rotate(Rot_modes Mode) {
+	if (Mode == Button) {
 		if (!digitalRead(BUTTON_PIN)) {
 			for (int i = 0; i < Steps_in_deg_mode; i++) {
-				digitalWrite(STEP_PIN, HIGH);
-				delayMicroseconds(Rot_delay);
-
-				digitalWrite(STEP_PIN, LOW);
-				delayMicroseconds(rot_delay);
+				Step();
 			}
-			digitalWrite(DIR_PIN, !digitalRead(DIR_PIN));
 			delay(100);
 		}
-	} else {
-		digitalWrite(DIR_PIN, !digitalRead(DIR_DIP));
-		digitalWrite(STEP_PIN, HIGH);
-		delayMicroseconds(Rot_delay);
-
-		digitalWrite(STEP_PIN, LOW);
-		delayMicroseconds(rot_delay);
+	} else if (Mode == Continuous) {
+		Step();
 	}
 }
