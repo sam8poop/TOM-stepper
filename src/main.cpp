@@ -5,15 +5,16 @@
 #define ENABLE_PIN 9
 #define DIR_DIP 3
 #define ENABLE_DIP 4
-
+  
 // config
-#define MICRO_STEP_MODE 6400 // change to 200 for low steps per rev, 800 for normal steps per rev, 6400 for high steps per rev
+const int micro_step_mode = 6400; // change to 200 for low steps per rev, 800 for normal steps per rev, 6400 for high steps per rev
 const int deg = 180;
 const float rpm = 60;
 
 // calc
-const int rot_delay = 30000000.0 / (rpm * MICRO_STEP_MODE);
-const int steps_in_deg_mode = MICRO_STEP_MODE * (deg / 360.0);
+const int rot_delay = 30000000.0 / (rpm * micro_step_mode);
+const int steps_in_deg_mode = micro_step_mode * (deg / 360.0);
+
 void setup() {
   Serial.begin(115200);
   pinMode(STEP_PIN, OUTPUT);
